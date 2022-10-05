@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Youtube to MP3</title>
+        <style>
+            #title {
+                text-align: center;
+            }
+            #input {
+                display: flex;
+                margin: 2% auto;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            #input-url {
+                display: block;
+                min-width: 25rem;
+            }
+            #submit {
+                width: 5rem;
+            }
+            #credit {
+                text-align: right;
+                position: fixed;
+                bottom: 0;
+                right: 5rem;
+                width: 100%;
+                height: 5%;
+            }
+
+            /* A part of this table style is taken from https://codepen.io/tomhodgins/pen/QEwvEK*/
+            table {
+                margin: 2% auto;
+                color: #333;
+                background: white;
+                border: 1px solid grey;
+                font-size: 12pt;
+                border-collapse: collapse;
+            }
+            table thead th,
+            table tfoot th {
+                color: #777;
+                background: rgba(0, 0, 0, 0.1);
+            }
+            table caption {
+                padding: 0.5em;
+            }
+            table th,
+            table td {
+                padding: 0.5em;
+                border: 1px solid lightgrey;
+            }
+
+            /* A part of this loader is taken from https://www.w3schools.com/howto/howto_css_loader.asp*/
+            .loader {
+                margin: 0 auto;
+                border: 0.2rem solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 0.2rem solid #555;
+                width: 0.5rem;
+                height: 0.5rem;
+                animation: spin 0.5s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Youtube to Mp3</h1>
+        <div id="input">
+            <textarea id="input-url" rows="5">Input Youtube URL here</textarea>
+            <button id="submit">Submit</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Query</th>
+                    <th>Status</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody id="output"></tbody>
+        </table>
+        <footer>
+            <p id="credit">
+                Created by <a href="https://github.com/duongoku/">duongoku</a>
+            </p>
+        </footer>
+        <script>
+            document.querySelector("#submit").onclick = async function () {
+                const res = await fetch("/addurl", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                    body: document.getElementById("input-url").value,
+                });
+                const data = await res.text();
+                alert(data);
+                update();
+            };
+
+            function update() {
+                fetch("/queue")
+                    .then((res) => res.json())
+                    .then((data) => {
+                        const output = document.getElementById("output");
+                        output.innerHTML = "";
+                        data = Object.keys(data).map((key) => data[key]);
+                        data.forEach((item) => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${item.url}</td>
+                                <td>${
+                                    item.done
+                                        ? "Done"
+                                        : `<div class="loader"></div>`
+                                }</td>
+                                <td><a href="${item.parsed_url}">${
+                                item.done
+                                    ? "Download"
+                                    : `<div class="loader"></div>`
+                            }</a></td>
+                            `;
+                            output.appendChild(row);
+                        });
+                    });
+            }
+
+            update();
+            setInterval(update, 2000);
+        </script>
+    </body>
+</html>
