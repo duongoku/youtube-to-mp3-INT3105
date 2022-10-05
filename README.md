@@ -42,3 +42,7 @@ Some css styles are inspired by https://codepen.io/tomhodgins/pen/QEwvEK and htt
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
+
+## Side note
+
+Malformed youtube url will crash the server (I only did a light sanitization on the url). I'm too occupied at the moment to fix this issue. If you want to fix it, feel free to make a pull request.
