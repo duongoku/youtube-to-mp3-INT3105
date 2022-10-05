@@ -22,7 +22,7 @@ A web server for hosting a website where you can convert youtube url into mp3 fi
     ```bash
     go run main.go
     ```
--   Open your browser and go to [http://localhost:5000]
+-   Open your browser and go to http://localhost:5000
 
 ## Preview
 
