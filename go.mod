@@ -1,4 +1,4 @@
-module demo
+module github.com/duongoku/youtube-to-mp3-INT3105
 
 go 1.19
 
